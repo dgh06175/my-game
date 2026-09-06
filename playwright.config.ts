@@ -7,13 +7,15 @@ export default defineConfig({
   workers: 1,
   // CI renders WebGL on the CPU; keep the same gameplay checks with more wall-clock time.
   timeout: process.env.CI ? 180_000 : 60_000,
-  expect: { timeout: process.env.CI ? 30_000 : 10_000 },
+  expect: { timeout: process.env.CI ? 45_000 : 10_000 },
   retries: process.env.CI ? 1 : 0,
   reporter: [["list"]],
   use: {
     baseURL: "http://127.0.0.1:5180/my-game/",
     browserName: "chromium",
     channel: process.env.CI ? undefined : "chrome",
+    // Keep layout/input coordinates identical while reducing CPU rasterization.
+    deviceScaleFactor: process.env.CI ? 0.5 : 1,
     headless: true,
     launchOptions: {
       args: [
@@ -39,7 +41,7 @@ export default defineConfig({
         viewport: { width: 844, height: 390 },
         isMobile: true,
         hasTouch: true,
-        deviceScaleFactor: 1,
+        deviceScaleFactor: process.env.CI ? 0.5 : 1,
       },
     },
   ],

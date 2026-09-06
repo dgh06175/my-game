@@ -121,6 +121,7 @@ function brand() {
   return `<a class="brand" href="#" data-action="base" aria-label="펠라지아 기지"><span class="brand-symbol">${icon("wave", 28)}</span><span>PELAGIA<small>바다의 수집가</small></span></a>`;
 }
 function renderBase() {
+  audio.setEnvironment("base");
   const b = BIOMES.find((x) => x.id === selectedBiome)!;
   $("#interface").className = "base-interface";
   $("#interface").innerHTML =
@@ -218,6 +219,8 @@ function updateHUD() {
   const r = expedition.state,
     p = r.player,
     nearest = expedition.nearestExit();
+  const depth = Math.abs(p.y) * 0.35 + (r.biome === "reef" ? 10 : r.biome === "wreck" ? 45 : 120);
+  audio.setEnvironment(r.biome, depth);
   $("#oxygen-clock").textContent = timeLabel(p.oxygen);
   $("#oxygen-meter").style.width =
     `${Math.max(0, (p.oxygen / expedition.oxygenMax) * 100)}%`;
@@ -227,7 +230,7 @@ function updateHUD() {
   $("#cargo-label").textContent =
     `${cargoWeight(r.cargo)} / ${expedition.capacity}`;
   $("#depth-label").textContent =
-    `${Math.round(Math.abs(p.y) * 0.35 + (r.biome === "reef" ? 10 : r.biome === "wreck" ? 45 : 120))} m 수심`;
+    `${Math.round(depth)} m 수심`;
   $("#return-distance").textContent = `${Math.round(nearest.distance)} m`;
   const angle = Math.atan2(-(nearest.exit.y - p.y), nearest.exit.x - p.x);
   $("#return-arrow").style.transform = `rotate(${angle}rad)`;

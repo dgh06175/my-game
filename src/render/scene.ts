@@ -1270,7 +1270,7 @@ export class OceanScene {
               : 3 + rng() * 2;
         const rock =
           layer === 0
-            ? createRock(run.seed + layer * 61 + i * 19)
+            ? this.roundedBoulder(run.seed + layer * 61 + i * 19, far)
             : this.roundedBoulder(
                 run.seed + layer * 61 + i * 19,
                 layer === 1 ? middle : near,

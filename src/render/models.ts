@@ -1230,41 +1230,65 @@ export function createCoral(kind: number, color?: number): THREE.Group {
       }
     }
   } else if (Math.abs(kind) % 3 === 1) {
-    // Layered foliose coral has a rippled edge and a concave, bowl-shaped surface.
+    // Closed, gently cupped plates retain a rounded silhouette from the side.
+    // A little self-light keeps their undersides readable in the deep-water lighting.
+    const plateColor = new THREE.Color(
+      color ?? colors[Math.abs(kind) % colors.length],
+    );
+    const plateMat = material(plateColor.getHex(), 0.73, 0.03, 0.14);
+    const rimMat = material(
+      plateColor.clone().lerp(new THREE.Color(0xffefdc), 0.48).getHex(),
+      0.69,
+      0.03,
+      0.16,
+    );
     for (let layer = 0; layer < 3; layer++) {
-      const geo = new THREE.CircleGeometry(
-        0.7 - layer * 0.14,
-        32,
-        0,
-        Math.PI * 2,
-      );
+      const radius = 0.7 - layer * 0.14;
+      const thickness = 0.047 + layer * 0.009;
+      const geo = new THREE.SphereGeometry(1, 28, 10);
       const positions = geo.getAttribute("position");
+      const surface = (a: number, radial: number) => {
+        const ripple = 1 + Math.sin(a * 7 + layer * 0.7) * 0.045;
+        return new THREE.Vector3(
+          Math.cos(a) * radius * radial * ripple,
+          0.15 * radius * radial ** 2 +
+            Math.sin(a * 7 + layer) * 0.026 * radial ** 3,
+          Math.sin(a) * radius * radial * ripple,
+        );
+      };
       for (let i = 0; i < positions.count; i++) {
         const x = positions.getX(i),
           y = positions.getY(i),
-          a = Math.atan2(y, x),
-          r = Math.hypot(x, y);
-        positions.setXYZ(
-          i,
-          x * (1 + Math.sin(a * 7) * 0.08),
-          0.16 * r + Math.sin(a * 7 + layer) * 0.055 * r,
-          y,
-        );
+          z = positions.getZ(i);
+        const p = surface(Math.atan2(z, x), Math.hypot(x, z));
+        positions.setXYZ(i, p.x, p.y + y * thickness, p.z);
       }
       geo.computeVertexNormals();
-      const plate = mesh(geo, coralMat, [
+      const plate = mesh(geo, plateMat, [
         (layer % 2) * 0.12,
         0.18 + layer * 0.25,
         -layer * 0.07,
       ]);
-      plate.rotation.z = -0.07 + layer * 0.08;
+      plate.rotation.x = -0.14 + layer * 0.17;
+      plate.rotation.z = layer % 2 ? 0.13 : -0.1 + layer * 0.025;
       root.add(plate);
+      const rimPath = new THREE.CatmullRomCurve3(
+        Array.from({ length: 28 }, (_, i) => surface((i / 28) * Math.PI * 2, 1)),
+        true,
+      );
+      const rim = mesh(
+        new THREE.TubeGeometry(rimPath, 42, 0.025 + layer * 0.003, 5, true),
+        rimMat,
+      );
+      rim.position.copy(plate.position);
+      rim.rotation.copy(plate.rotation);
+      root.add(rim);
       rod(
         root,
         [0, 0, 0],
         [0, 0.22 + layer * 0.25, -layer * 0.07],
         0.06,
-        coralMat,
+        plateMat,
       );
     }
   } else {

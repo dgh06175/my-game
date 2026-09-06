@@ -1,0 +1,13 @@
+PELAGIA — 바다의 수집가
+
+Models, underwater effects, interface illustrations, and generated audio
+were created for this project. Original model artwork: CC0 1.0 Universal.
+
+Three.js: MIT License (https://threejs.org/)
+DM Sans: SIL Open Font License 1.1; see licenses/dm-sans-OFL.txt
+Noto Sans KR: SIL Open Font License 1.1; see licenses/noto-sans-kr-OFL.txt
+Fonts are bundled locally through Fontsource; no third-party font request is
+needed to play the game.
+
+Project source and detailed notices:
+https://github.com/dgh06175/my-game

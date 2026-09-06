@@ -5,9 +5,9 @@ export default defineConfig({
   testMatch: "e2e.spec.ts",
   fullyParallel: false,
   workers: 1,
-  // CI renders WebGL on the CPU; keep the same gameplay checks with more wall-clock time.
-  timeout: process.env.CI ? 180_000 : 60_000,
-  expect: { timeout: process.env.CI ? 45_000 : 10_000 },
+  // Software WebGL runs below real-time on local and CI CPUs; allow the same actions to finish.
+  timeout: process.env.CI ? 180_000 : 90_000,
+  expect: { timeout: process.env.CI ? 45_000 : 20_000 },
   retries: process.env.CI ? 1 : 0,
   reporter: [["list"]],
   use: {

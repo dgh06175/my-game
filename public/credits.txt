@@ -3,6 +3,10 @@ PELAGIA — 바다의 수집가
 Models, underwater effects, interface illustrations, and generated audio
 were created for this project. Original model artwork: CC0 1.0 Universal.
 
+Background music: "Horizon's Hush", "Crystal Clear Ocean",
+"Fading Sunlight Below", "Endless Descent" — made for this game by a friend
+of the project owner and used with permission.
+
 Three.js: MIT License (https://threejs.org/)
 DM Sans: SIL Open Font License 1.1; see licenses/dm-sans-OFL.txt
 Noto Sans KR: SIL Open Font License 1.1; see licenses/noto-sans-kr-OFL.txt

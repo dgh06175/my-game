@@ -26,14 +26,19 @@ other third-party dependencies. Dependency notices remain in their packages.
 
 The interface icons and species illustrations in `src/ui/icons.ts`, underwater
 effects and room geometry in `src/render/scene.ts`, and Web Audio ambience and
-effects in `src/audio.ts` are original, created for this project. No recorded
-music or sound effects were downloaded. No paid or attribution-restricted art
-assets are used.
+effects in `src/audio.ts` are original, created for this project. Apart from the
+background music below, no recorded music or sound effects are used. No paid or
+attribution-restricted art assets are used.
 
-## Bundled fonts
+## Background music
 
-DM Sans and Noto Sans KR are distributed through their Fontsource variable-font
-packages under the SIL Open Font License 1.1. The fonts are bundled in the built
-site and do not require runtime Google Fonts requests. Their full license texts
-are included in `public/licenses/dm-sans-OFL.txt` and
-`public/licenses/noto-sans-kr-OFL.txt`, and are included in the Pages artifact.
+The field station and each dive area loop their own track from `public/audio/`.
+The tracks were made for this game by a friend of the project owner and are used
+with permission:
+
+| Area | Track | File |
+| --- | --- | --- |
+| Field station (lobby) | Horizon's Hush | `horizons-hush.mp3` |
+| 01 Sunlit Reef | Crystal Clear Ocean | `crystal-clear-ocean.mp3` |
+| 02 Sunken Wreck | Fading Sunlight Below | `fading-sunlight-below.mp3` |
+| 03 Luminous Abyss | Endless Descent | `endless-descent.mp3` |

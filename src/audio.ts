@@ -7,11 +7,23 @@ const MOODS: Record<SoundEnvironment, { root: number; cutoff: number; water: num
   wreck: { root: 98, cutoff: 900, water: 330, volume: 0.38 },
   abyss: { root: 73.42, cutoff: 650, water: 230, volume: 0.34 },
 };
+// The base (lobby) and each dive area have their own looping background track.
+const MUSIC: Record<SoundEnvironment, string> = {
+  base: "horizons-hush.mp3",
+  reef: "crystal-clear-ocean.mp3",
+  wreck: "fading-sunlight-below.mp3",
+  abyss: "endless-descent.mp3",
+};
+const MUSIC_VOLUME = 0.4;
+type MusicTrack = { element: HTMLAudioElement; gain: GainNode; stopTimer?: ReturnType<typeof setTimeout> };
 
 export class Soundscape {
   private ctx?: AudioContext;
   private master?: GainNode;
   private ambience?: GainNode;
+  private music?: GainNode;
+  private tracks = new Map<SoundEnvironment, MusicTrack>();
+  private suspended = false;
   private harmonicFilter?: BiquadFilterNode;
   private waterFilter?: BiquadFilterNode;
   private waterGain?: GainNode;
@@ -23,8 +35,11 @@ export class Soundscape {
   private lastEnvironmentUpdate = -Infinity;
   private muted = false;
   start(): void {
+    this.suspended = false;
     if (this.ctx) {
       void this.ctx.resume();
+      const track = this.tracks.get(this.environment);
+      if (track && !track.stopTimer) this.play(track);
       return;
     }
     try {
@@ -36,6 +51,9 @@ export class Soundscape {
       this.ambience = ctx.createGain();
       this.ambience.gain.value = 0.45;
       this.ambience.connect(this.master);
+      this.music = ctx.createGain();
+      this.music.gain.value = MUSIC_VOLUME;
+      this.music.connect(this.master);
       this.harmonicFilter = ctx.createBiquadFilter();
       this.harmonicFilter.type = "lowpass";
       this.harmonicFilter.Q.value = 0.35;
@@ -87,6 +105,7 @@ export class Soundscape {
     // HUD updates are frequent, but automation is limited to twice per second
     // and two metres of movement. Area transitions can begin immediately.
     if (!force && !changedArea && (now - this.lastEnvironmentUpdate < 0.5 || Math.abs(this.depth - this.appliedDepth) < 2)) return;
+    if (changedArea || force) this.syncMusic();
     const mood = MOODS[this.environment];
     const depth = this.environment === "base" ? 0 : this.depth / 200;
     const smooth = (param: AudioParam, target: number) => {
@@ -109,6 +128,53 @@ export class Soundscape {
     this.appliedDepth = this.depth;
     this.lastEnvironmentUpdate = now;
   }
+  private syncMusic(): void {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const active = this.environment;
+    for (const [id, track] of this.tracks) {
+      if (id === active || track.stopTimer) continue;
+      track.gain.gain.cancelScheduledValues(now);
+      track.gain.gain.setTargetAtTime(0, now, 0.6);
+      // Stop once the fade is inaudible so the next visit starts from the top.
+      track.stopTimer = setTimeout(() => {
+        track.element.pause();
+        track.element.currentTime = 0;
+      }, 3000);
+    }
+    const track = this.track(active);
+    if (!track) return;
+    clearTimeout(track.stopTimer);
+    track.stopTimer = undefined;
+    track.gain.gain.cancelScheduledValues(now);
+    track.gain.gain.setTargetAtTime(1, now, 0.8);
+    this.play(track);
+  }
+  private track(id: SoundEnvironment): MusicTrack | undefined {
+    const existing = this.tracks.get(id);
+    if (existing || !this.ctx || !this.music) return existing;
+    try {
+      // Streamed media elements avoid decoding a whole multi-minute file up front.
+      const element = new Audio(`${import.meta.env.BASE_URL}audio/${MUSIC[id]}`);
+      element.loop = true;
+      element.preload = "auto";
+      const gain = this.ctx.createGain();
+      gain.gain.value = 0;
+      this.ctx.createMediaElementSource(element).connect(gain);
+      gain.connect(this.music);
+      const track = { element, gain };
+      this.tracks.set(id, track);
+      return track;
+    } catch {
+      return undefined;
+    }
+  }
+  private play(track: MusicTrack): void {
+    if (this.suspended || !track.element.paused) return;
+    track.element.play().catch(() => {
+      /* Music is optional; playback retries on the next user gesture. */
+    });
+  }
   setMuted(muted: boolean): void {
     this.muted = muted;
     if (this.master && this.ctx)
@@ -119,7 +185,9 @@ export class Soundscape {
       );
   }
   suspend(): void {
+    this.suspended = true;
     void this.ctx?.suspend();
+    for (const track of this.tracks.values()) track.element.pause();
   }
   tone(kind: string): void {
     if (!this.ctx || !this.master || this.muted) return;

@@ -34,41 +34,4 @@
 
 체력·산소가 소진되거나 탐사 중 새로고침·탭 종료를 하면 이번 수집품을 잃습니다. 도감, 기존 장비·보관품·기지는 남습니다. 다른 탭으로 잠시 이동하거나 모바일을 세로로 돌리면 일시정지됩니다.
 
-## 개발
-
-Node.js 24 LTS 권장.
-
-```sh
-npm ci
-npm run dev
-```
-
-개발 주소: `http://localhost:5173/my-game/`
-
-```sh
-npm test
-npm run build
-npm run test:e2e
-npm run preview
-```
-
-로컬 브라우저 테스트는 설치된 Google Chrome을 사용하며 CI에서는 Playwright Chromium을 사용합니다. 브라우저가 없는 환경은 `npx playwright install chromium`으로 설치하세요. 자세한 실행 선택은 `playwright.config.ts`를 참고하세요.
-
-## 구성
-
-- `src/core`: 생성, 이동·충돌, 생물·전투, 성장, IndexedDB와 파일 검증
-- `src/render`: Three.js 장면과 직접 제작한 절차적 3D 모델·애니메이션
-- `src/main.ts`, `src/style.css`: 한국어 메뉴, HUD, 키보드·마우스·터치 입력
-- `tests`: 생성·게임 규칙·저장 단위 테스트와 데스크톱/모바일 UI 통합 테스트
-
-게임 판정은 XY 평면에 있고 배경과 모델은 3D입니다. 모델·물 효과·소리는 게임 코드에서 생성하고 글꼴도 함께 배포하므로 실행 시 외부 에셋 서버에 접속하지 않습니다. 개발용 테스트 접근자는 배포 빌드에서 제거됩니다.
-
-## 자동배포
-
-GitHub Pages 게시 소스는 **GitHub Actions**입니다. `main`에 푸시하면 단위 검사, 타입 검사, 빌드, 브라우저 테스트를 통과한 결과를 Pages에 배포합니다. 프로젝트 경로는 `/my-game/`입니다.
-
-PC 1080p 60fps, 모바일 저품질 30fps는 성능 목표입니다. 실제 결과는 기기·브라우저·그래픽 설정에 따라 달라집니다. 5–10분 탐사와 30–60분 첫 목표 달성을 기준으로 초기 산소·성장 비용을 설정했으며, 실패 횟수와 탐색·꾸미기 방식에 따라 플레이 시간이 달라집니다.
-
-검사 범위와 실제 기기 측정 여부는 [VALIDATION.md](VALIDATION.md)에 기록합니다.
-
 에셋과 글꼴 라이선스는 [ASSETS.md](ASSETS.md)를 참고하세요.

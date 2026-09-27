@@ -4,6 +4,8 @@
 
 **[웹에서 플레이](https://dgh06175.github.io/my-game/)**
 
+![수족관과 장식으로 꾸민 PELAGIA 해저 기지](docs/screenshot.jpg)
+
 ## 게임
 
 - 해역 3곳, 생물 12종, 수족관 생물 6종, 장식 12종

@@ -34,7 +34,7 @@ npm run preview
 ## 에셋과 배경음악
 
 - 정적 파일은 `public/`에 둡니다. `dist/`는 빌드 결과물이라 gitignore되고 빌드할 때마다 비워집니다. CI도 소스에서 새로 빌드합니다.
-- 배경음악은 `public/audio/`의 mp3 4곡이고 `src/audio.ts`의 `MUSIC`에서 환경별로 연결합니다: 기지(로비) `horizons-hush`, 산호초 `crystal-clear-ocean`, 난파선 `fading-sunlight-below`, 심해 `endless-descent`.
+- 배경음악은 `public/audio/`의 mp3 4곡이고 `src/audio.ts`의 `MUSIC`에서 환경별로 연결합니다: 기지(로비) `horizons-hush`, 산호초 `crystal-clear-ocean`, 난파선 `endless-descent`, 심해 `fading-sunlight-below`.
   - 스트리밍 `HTMLAudioElement` → `MediaElementSource` → 음악 버스 → master 구조라 음소거 설정이 그대로 적용됩니다. 곡 음량은 `MUSIC_VOLUME`.
   - 환경이 바뀌면 크로스페이드하고, 떠난 곡은 3초 뒤 멈추고 처음으로 되감습니다. 탭을 숨기면 `suspend()`로 멈추고 다음 사용자 입력의 `start()`에서 이어집니다.
   - 브라우저 자동 재생 정책 때문에 첫 클릭 전에는 소리가 나지 않습니다.

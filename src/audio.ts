@@ -11,8 +11,8 @@ const MOODS: Record<SoundEnvironment, { root: number; cutoff: number; water: num
 const MUSIC: Record<SoundEnvironment, string> = {
   base: "horizons-hush.mp3",
   reef: "crystal-clear-ocean.mp3",
-  wreck: "fading-sunlight-below.mp3",
-  abyss: "endless-descent.mp3",
+  wreck: "endless-descent.mp3",
+  abyss: "fading-sunlight-below.mp3",
 };
 const MUSIC_VOLUME = 0.4;
 type MusicTrack = { element: HTMLAudioElement; gain: GainNode; stopTimer?: ReturnType<typeof setTimeout> };

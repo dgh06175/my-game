@@ -40,5 +40,5 @@ with permission:
 | --- | --- | --- |
 | Field station (lobby) | Horizon's Hush | `horizons-hush.mp3` |
 | 01 Sunlit Reef | Crystal Clear Ocean | `crystal-clear-ocean.mp3` |
-| 02 Sunken Wreck | Fading Sunlight Below | `fading-sunlight-below.mp3` |
-| 03 Luminous Abyss | Endless Descent | `endless-descent.mp3` |
+| 02 Sunken Wreck | Endless Descent | `endless-descent.mp3` |
+| 03 Luminous Abyss | Fading Sunlight Below | `fading-sunlight-below.mp3` |
